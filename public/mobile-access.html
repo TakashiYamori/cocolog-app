@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ココログ - スマホでアクセス</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(16px);
+    }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px;
+      background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    p { color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+    #qr-container {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-block;
+      margin-bottom: 24px;
+    }
+    #qr-container canvas, #qr-container img { display: block; }
+    .url-box {
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: #06b6d4;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+    .steps {
+      text-align: left;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 2;
+    }
+    .steps span { color: #06b6d4; font-weight: 600; }
+    .badge {
+      display: inline-block;
+      background: rgba(139,92,246,0.2);
+      border: 1px solid rgba(139,92,246,0.4);
+      color: #a78bfa;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>ococログ スマホアクセス</h1>
+    <div class="badge">📱 同じWiFiに接続してください</div>
+    <p>スマホのカメラでQRコードを読み込むか、<br>下のURLを直接入力してください。</p>
+
+    <div id="qr-container">
+      <canvas id="qr-canvas"></canvas>
+    </div>
+
+    <div class="url-box" id="app-url">http://172.16.69.11:4173</div>
+
+    <div class="steps">
+      <div>① <span>同じWiFi</span>にスマホを接続</div>
+      <div>② QRコードをカメラで読み込む</div>
+      <div>③ ブラウザで開いたら、メニューから</div>
+      <div>　 <span>「ホーム画面に追加」</span>でアプリとして使用可能</div>
+    </div>
+  </div>
+
+  <!-- QR Code generation using qrcodejs via CDN -->
+  <script>
+    // Simple QR Code generator (pure JS, no external CDN needed)
+    // Using canvas-based QR generation
+    const url = 'http://172.16.69.11:4173';
+    document.getElementById('app-url').textContent = url;
+
+    // Load QRCode library dynamically
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    script.onload = function() {
+      document.getElementById('qr-container').innerHTML = '';
+      new QRCode(document.getElementById('qr-container'), {
+        text: url,
+        width: 220,
+        height: 220,
+        colorDark: '#0f172a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    };
+    script.onerror = function() {
+      // Fallback: show URL as text if no internet
+      document.getElementById('qr-container').innerHTML =
+        '<p style="color:#0f172a;padding:10px;font-size:0.85rem">QRコード生成にはインターネットが必要です</p>';
+    };
+    document.head.appendChild(script);
+  </script>
+</body>
+</html>
